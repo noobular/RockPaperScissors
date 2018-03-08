@@ -5,11 +5,12 @@
 
 #Imports
 #==============================
-import random,time,csv,os, operator
+import random,time,csv,os,operator
+from gpiozero import Button
 
 #Variables
 #==============================
-global again,userwins,pcwins,successfulBool,legalAnswer,useranswer,winCount,fieldnames,scorefile,plyname,plylname
+global again,userwins,pcwins,successfulBool,legalAnswer,useranswer,winCount,fieldnames,scorefile,plyname,plylname,getInput
 again = True
 userwins = 0
 pcwins = 0
@@ -20,6 +21,13 @@ winCount = 1
 
 fieldnames = ['score','fn','ln']
 scorefile = "scores"
+
+#Buttons
+#==============
+R = Button(12)
+P = Button(17)
+S = Button(26)
+
 #Functions
 #==============================
 
@@ -144,15 +152,29 @@ def playAgain():
                     print("   ")
 #Play function/loop
 def Play() :
-    global again,userwins,pcwins,successfulBool,legalAnswer,useranswer,winCount
+    global again,userwins,pcwins,successfulBool,legalAnswer,useranswer,winCount,getInput
 
     while True :
         pcinput = random.randint(1,4)
         if again == True:
-            print(plyname.title(),'Please choose "Rock", "Paper", "Scissors", or "Hammer" ')
+            print(plyname.title(),'Please choose "Rock", "Paper", "Scissors", (or "Hammer" If there was a fourth button...)')
             print("   ")
-            useranswer = str(input()).lower()
-            
+           # useranswer = str(input()).lower()   ### ORIGINAL Method of getting rock paper or scissors
+           
+            getInput = False
+            while getInput == False:
+                if R.is_pressed:
+                    useranswer = "rock"
+                    getInput = True
+                elif P.is_pressed:
+                    useranswer = "paper"
+                    getInput = True
+                elif S.is_pressed:
+                    useranswer = "scissors"
+                    getInput = True
+                else:
+                   time.sleep(.025)
+
             if useranswer == "rock" or useranswer == "paper" or useranswer == "scissors" or useranswer=="hammer":
                 if useranswer == "rock" or useranswer=="paper" or useranswer=="scissors" or useranswer=="hammer":
                     successfulBool = True
